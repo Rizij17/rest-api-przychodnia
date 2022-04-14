@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="001" author="krzysiek">
+        <createTable tableName="doctor">
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="animal_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rate" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nip" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_DOCTOR_NIP"/>
+            </column>
+            <column name="fired" type="BOOLEAN"/>
+            <column name="version" type="INT"/>
+        </createTable>
+
+        <createTable tableName="patient">
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="breed" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_surname" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_PATIENT_EMAIL"/>
+            </column>
+            <column name="version" type="INT"/>
+        </createTable>
+
+        <createTable tableName="appointment">
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="start" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="doctor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="confirmed" type="BOOLEAN"/>
+            <column name="version" type="INT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="appointment" baseColumnNames="doctor_id" constraintName="fk_doctor_id"
+                                 referencedTableName="doctor"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+        <addForeignKeyConstraint baseTableName="appointment" baseColumnNames="patient_id" constraintName="fk_patient_id"
+                                 referencedTableName="patient"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+</databaseChangeLog>
+
+
+

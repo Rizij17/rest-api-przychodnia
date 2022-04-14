@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="001" author="krzysiek">
+        <insert tableName="doctor">
+            <column name="id" value="1"/>
+            <column name="name" value="Aleksander"/>
+            <column name="surname" value="Drzewo"/>
+            <column name="type" value="Kardiolog"/>
+            <column name="animal_type" value="Krowa"/>
+            <column name="rate" value="50"/>
+            <column name="nip" value="010203"/>
+            <column name="fired" valueBoolean="false"/>
+            <column name="version" value="0"/>
+        </insert>
+
+        <insert tableName="doctor">
+            <column name="id" value="2"/>
+            <column name="name" value="Dominika"/>
+            <column name="surname" value="Klon"/>
+            <column name="type" value="Kardiolog"/>
+            <column name="animal_type" value="Pies"/>
+            <column name="rate" value="100"/>
+            <column name="nip" value="001122"/>
+            <column name="fired" valueBoolean="false"/>
+            <column name="version" value="0"/>
+        </insert>
+
+        <insert tableName="doctor">
+            <column name="id" value="3"/>
+            <column name="name" value="Aleksandra"/>
+            <column name="surname" value="Drzewiasta"/>
+            <column name="type" value="Laryngolog"/>
+            <column name="animal_type" value="Kot"/>
+            <column name="rate" value="45"/>
+            <column name="nip" value="334455"/>
+            <column name="fired" valueBoolean="false"/>
+            <column name="version" value="0"/>
+        </insert>
+
+        <insert tableName="patient">
+            <column name="id" value="1"/>
+            <column name="name" value="Max"/>
+            <column name="type" value="Pies"/>
+            <column name="breed" value="Mieszaniec"/>
+            <column name="owner_name" value="Maciej"/>
+            <column name="owner_surname" value="Nazwiskowy"/>
+            <column name="email" value="max123@gmail.com"/>
+            <column name="version" value="0"/>
+        </insert>
+
+        <insert tableName="patient">
+            <column name="id" value="2"/>
+            <column name="name" value="Fafik"/>
+            <column name="type" value="Kot"/>
+            <column name="breed" value="Dachowiec"/>
+            <column name="owner_name" value="Ada"/>
+            <column name="owner_surname" value="Nazwiskowa"/>
+            <column name="email" value="12adA@gmail.com"/>
+            <column name="version" value="0"/>
+        </insert>
+
+        <insert tableName="patient">
+            <column name="id" value="3"/>
+            <column name="name" value="Łaciata"/>
+            <column name="type" value="Krowa"/>
+            <column name="breed" value="Krowia"/>
+            <column name="owner_name" value="Mieczysław"/>
+            <column name="owner_surname" value="Mazurski"/>
+            <column name="email" value="miecio45@gmail.com"/>
+            <column name="version" value="0"/>
+        </insert>
+
+        <insert tableName="appointment">
+            <column name="id" value="1"/>
+            <column name="start" value="2022-04-20T10:30"/>
+            <column name="doctor_id" value="1"/>
+            <column name="patient_id" value="1"/>
+            <column name="confirmed" value="true"/>
+            <column name="version" value="0"/>
+        </insert>
+
+        <insert tableName="appointment">
+            <column name="id" value="2"/>
+            <column name="start" value="2022-04-20T12:30"/>
+            <column name="doctor_id" value="2"/>
+            <column name="patient_id" value="3"/>
+            <column name="confirmed" value="true"/>
+            <column name="version" value="0"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
+
+
+
