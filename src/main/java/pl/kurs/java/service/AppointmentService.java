@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.kurs.java.error.AlreadyTakenException;
 import pl.kurs.java.error.EntityNotFoundException;
 import pl.kurs.java.error.InvalidDateException;
 import pl.kurs.java.model.*;
@@ -49,7 +48,7 @@ public class AppointmentService {
     public Appointment save(Appointment appointment) {
         Appointment toSave = appointmentRepository.saveAndFlush(appointment);
         ConfirmationToken appointmentToken = generateVerificationToken(appointment);
-
+        mailService.sendMail(new NotificationEmail("kliikaKotlet@gmail.com", "Appointment confirmation", appointment.getPatient().getEmail(), "Thank you for registering for the visit, click th link to confirm: " + "http://localhost:8081/api/appointments/confirm/" + appointmentToken.getToken()));
         return toSave;
     }
 
@@ -83,18 +82,10 @@ public class AppointmentService {
         appointmentRepository.delete(appointment);
     }
 
-    public boolean existsByDoctorAndDateBetween(LocalDateTime from, LocalDateTime to, Doctor doctor){
-        return appointmentRepository.findAll().stream().anyMatch(appointment -> appointment.getDoctor().equals(doctor) && appointment.getStart().isAfter(from) && appointment.getStart().isBefore(to));
-    }
-
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Appointment createAppointment(CreateAppointmentCommand createAppointmentCommand) {
         Doctor doctor = doctorRepository.findById(createAppointmentCommand.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor", Integer.toString(createAppointmentCommand.getDoctorId())));
-
-//        if (appointmentRepository.existByDoctorAndDateBetween(createAppointmentCommand.getStart(), createAppointmentCommand.getStart().plusHours(1), doctor)) {
-//            throw new AlreadyTakenException();
-//        }
 
         Patient patient = patientRepository.findById(createAppointmentCommand.getPatientId())
                 .orElseThrow(() -> new EntityNotFoundException("Patient", Integer.toString(createAppointmentCommand.getPatientId())));

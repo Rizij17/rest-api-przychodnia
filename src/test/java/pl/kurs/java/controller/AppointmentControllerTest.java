@@ -13,7 +13,6 @@ import pl.kurs.java.error.EntityNotFoundException;
 import pl.kurs.java.model.Appointment;
 import pl.kurs.java.model.Doctor;
 import pl.kurs.java.model.Patient;
-import pl.kurs.java.model.command.CreateAppointmentCommand;
 import pl.kurs.java.model.command.UpdateAppointmentCommand;
 import pl.kurs.java.model.dto.AppointmentDto;
 import pl.kurs.java.repository.AppointmentRepository;
@@ -35,7 +34,6 @@ class AppointmentControllerTest {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-
     @Test
     void shouldThrowOptimisticLockException() throws Exception {
         Doctor doctor = new Doctor("Maksymilian", "Gąbka", "Kardiolog", "Pies", 50, "113355", false);
@@ -54,11 +52,11 @@ class AppointmentControllerTest {
 
         String requestJson = objectMapper.writeValueAsString(
                 UpdateAppointmentCommand.builder()
-                        .start(LocalDateTime.of(2022, 10, 2, 15,0))
+                        .start(LocalDateTime.of(2022, 10, 2, 15, 0))
                         .version(beforeUpdate.getVersion())
                         .build());
 
-        String afterFirstEdit = postman.perform(MockMvcRequestBuilders.put("/appointments/" +appointmentId)
+        String afterFirstEdit = postman.perform(MockMvcRequestBuilders.put("/appointments/" + appointmentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
@@ -77,16 +75,7 @@ class AppointmentControllerTest {
     }
 
     @Test
-    void shouldSaveAppointment() throws Exception{
-        String requestJson = objectMapper.writeValueAsString(CreateAppointmentCommand.builder()
-                .doctorId(1)
-                .patientId(1)
-                .start(LocalDateTime.now().plusHours(3))
-                .build());
-    }
-
-    @Test
-    void shouldNotGetSingleAppointment() throws Exception {
+    void shouldNotGetAppointmentWithBadId() throws Exception {
         postman.perform(MockMvcRequestBuilders.get("/appointment/{id}", 100))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
@@ -94,7 +83,4 @@ class AppointmentControllerTest {
                 .andExpect(jsonPath("entityName").value("Appointment"))
                 .andExpect(jsonPath("entityKey").value(100));
     }
-
-
-
 }

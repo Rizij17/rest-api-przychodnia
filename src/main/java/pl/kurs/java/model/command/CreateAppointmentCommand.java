@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class  CreateAppointmentCommand {
+public class CreateAppointmentCommand {
 
     @NotEmpty(message = "DATE_NOT_EMPTY")
     @Future

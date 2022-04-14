@@ -12,5 +12,4 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     Page<Appointment> findAll(Pageable pageable);
 
-//    boolean existByDoctorAndDateBetween(LocalDateTime start, LocalDateTime plusHours, Doctor doctor);
 }

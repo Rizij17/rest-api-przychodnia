@@ -60,8 +60,8 @@ class PatientControllerTest {
     }
 
     @Test
-    void shouldNotGetSinglePatient() throws Exception {
-        postman.perform(MockMvcRequestBuilders.get("/doctors/{id}", 100))
+    void shouldNotGetPatientWithBadId() throws Exception {
+        postman.perform(MockMvcRequestBuilders.get("/patients/{id}",100))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
                         instanceof EntityNotFoundException))
