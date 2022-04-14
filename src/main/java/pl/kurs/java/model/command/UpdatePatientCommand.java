@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Builder
-public class  UpdatePatientCommand {
+public class UpdatePatientCommand {
 
     @NotEmpty(message = "NAME_NOT_EMPTY")
     private String name;

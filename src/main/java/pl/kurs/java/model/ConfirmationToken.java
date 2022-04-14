@@ -11,7 +11,8 @@ import javax.persistence.*;
 public class ConfirmationToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BigInteger")
     private int id;
     private String token;
     @OneToOne

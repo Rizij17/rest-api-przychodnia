@@ -50,4 +50,5 @@ class PatientServiceTest {
 
         Mockito.verify(patientRepositoryMock).saveAndFlush(saved);
     }
+
 }

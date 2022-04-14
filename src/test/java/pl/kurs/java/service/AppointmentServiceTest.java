@@ -31,13 +31,15 @@ class AppointmentServiceTest {
     private PatientRepository patientRepositoryMock;
     @Mock
     private ConfirmationTokenRepository confirmationTokenRepositoryMock;
+    @Mock
+    private MailService mailServiceMock;
 
     private Appointment appointment1, appointment2;
 
     @BeforeEach
     void init(){
         MockitoAnnotations.openMocks(this);
-        appointmentService = new AppointmentService(appointmentRepositoryMock, doctorRepositoryMock, patientRepositoryMock, confirmationTokenRepositoryMock);
+        appointmentService = new AppointmentService(appointmentRepositoryMock, doctorRepositoryMock, patientRepositoryMock, confirmationTokenRepositoryMock, mailServiceMock);
         Doctor doctor1 = Doctor.builder()
                 .name("Kamil")
                 .surname("Banasik")

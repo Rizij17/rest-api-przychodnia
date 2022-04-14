@@ -42,7 +42,6 @@ public class PatientService {
         patientRepository.findById(id).ifPresent(patientRepository::delete);
     }
 
-
     @Transactional
     public Patient edit(Patient toEdit, UpdatePatientCommand updatePatientCommand) {
         toEdit.setName(updatePatientCommand.getName());

@@ -7,6 +7,7 @@ import lombok.Setter;
 import pl.kurs.java.error.AlreadyTakenException;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 
@@ -18,6 +19,7 @@ public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BigInteger")
     private int id;
     private LocalDateTime start;
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

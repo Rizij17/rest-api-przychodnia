@@ -78,7 +78,7 @@
 
         <insert tableName="appointment">
             <column name="id" value="1"/>
-            <column name="start" value="2022-04-20T10:30"/>
+            <column name="start" value="2022-04-15T10:30"/>
             <column name="doctor_id" value="1"/>
             <column name="patient_id" value="1"/>
             <column name="confirmed" value="true"/>

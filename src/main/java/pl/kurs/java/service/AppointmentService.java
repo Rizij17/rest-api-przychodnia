@@ -3,16 +3,14 @@ package pl.kurs.java.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.java.error.AlreadyTakenException;
 import pl.kurs.java.error.EntityNotFoundException;
 import pl.kurs.java.error.InvalidDateException;
-import pl.kurs.java.model.Appointment;
-import pl.kurs.java.model.ConfirmationToken;
-import pl.kurs.java.model.Doctor;
-import pl.kurs.java.model.Patient;
+import pl.kurs.java.model.*;
 import pl.kurs.java.model.command.CreateAppointmentCommand;
 import pl.kurs.java.model.command.UpdateAppointmentCommand;
 import pl.kurs.java.repository.AppointmentRepository;
@@ -20,6 +18,7 @@ import pl.kurs.java.repository.ConfirmationTokenRepository;
 import pl.kurs.java.repository.DoctorRepository;
 import pl.kurs.java.repository.PatientRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +33,7 @@ public class AppointmentService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
     private final ConfirmationTokenRepository confirmationTokenRepository;
+    private final MailService mailService;
 
     @Transactional(readOnly = true)
     public Optional<Appointment> findById(int id) {
@@ -48,6 +48,8 @@ public class AppointmentService {
     @Transactional
     public Appointment save(Appointment appointment) {
         Appointment toSave = appointmentRepository.saveAndFlush(appointment);
+        ConfirmationToken appointmentToken = generateVerificationToken(appointment);
+
         return toSave;
     }
 
@@ -77,8 +79,32 @@ public class AppointmentService {
     public void cancelAppointment(ConfirmationToken confirmationToken) {
         int appointmentId = confirmationToken.getAppointment().getId();
         Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new EntityNotFoundException("Appointment", Integer.toString(appointmentId)));
+                .orElseThrow(() -> new EntityNotFoundException("Appointment", String.valueOf(appointmentId)));
         appointmentRepository.delete(appointment);
+    }
+
+    public boolean existsByDoctorAndDateBetween(LocalDateTime from, LocalDateTime to, Doctor doctor){
+        return appointmentRepository.findAll().stream().anyMatch(appointment -> appointment.getDoctor().equals(doctor) && appointment.getStart().isAfter(from) && appointment.getStart().isBefore(to));
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Appointment createAppointment(CreateAppointmentCommand createAppointmentCommand) {
+        Doctor doctor = doctorRepository.findById(createAppointmentCommand.getDoctorId())
+                .orElseThrow(() -> new EntityNotFoundException("Doctor", Integer.toString(createAppointmentCommand.getDoctorId())));
+
+//        if (appointmentRepository.existByDoctorAndDateBetween(createAppointmentCommand.getStart(), createAppointmentCommand.getStart().plusHours(1), doctor)) {
+//            throw new AlreadyTakenException();
+//        }
+
+        Patient patient = patientRepository.findById(createAppointmentCommand.getPatientId())
+                .orElseThrow(() -> new EntityNotFoundException("Patient", Integer.toString(createAppointmentCommand.getPatientId())));
+
+        Appointment appointment = appointmentRepository.saveAndFlush(Appointment.builder()
+                .doctor(doctor)
+                .patient(patient)
+                .start(createAppointmentCommand.getStart())
+                .build());
+        return appointment;
     }
 
     @Transactional
@@ -90,28 +116,12 @@ public class AppointmentService {
         return confirmationTokenRepository.saveAndFlush(confirmationToken);
     }
 
-    public List<Appointment> findAllByDateBetween(LocalDateTime from, LocalDateTime nextDay) {
-        return appointmentRepository.findAll().stream().filter(appointment -> appointment.getStart().isAfter(from) && appointment.getStart().isBefore(nextDay)).toList();
-    }
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Appointment createAppointment(CreateAppointmentCommand createAppointmentCommand) {
-        Doctor doctor = doctorRepository.findById(createAppointmentCommand.getDoctorId())
-                .orElseThrow(() -> new EntityNotFoundException("Doctor", Integer.toString(createAppointmentCommand.getDoctorId())));
-
-        if (appointmentRepository.existsByDoctorAndDateBetween(createAppointmentCommand.getStart(), createAppointmentCommand.getStart().plusHours(1), doctor)) {
-            throw new AlreadyTakenException();
+    @Scheduled(cron = "00 00 23 * * *")
+    public void nextDayVisitNotification() {
+        List<Appointment> tomorrowAppointments = appointmentRepository.findAll().stream().filter(a -> a.getStart().toLocalDate().equals(LocalDate.now().plusDays(1))).toList();
+        for (Appointment tomorrowAppointment : tomorrowAppointments) {
+            mailService.sendMail(new NotificationEmail("kliikaKotlet@gmail.com", "Appointment reminder", tomorrowAppointment.getPatient().getEmail(), "Just a friendly reminder about your visit planned for tomorrow at: " + tomorrowAppointment.getStart().toLocalTime()));
         }
-
-        Patient patient = patientRepository.findById(createAppointmentCommand.getPatientId())
-                .orElseThrow(() -> new EntityNotFoundException("Patient", Integer.toString(createAppointmentCommand.getPatientId())));
-
-        Appointment appointment = appointmentRepository.saveAndFlush(Appointment.builder()
-                .doctor(doctor)
-                .patient(patient)
-                .start(createAppointmentCommand.getStart())
-                .build());
-        generateVerificationToken(appointment);
-        return appointment;
     }
+
 }

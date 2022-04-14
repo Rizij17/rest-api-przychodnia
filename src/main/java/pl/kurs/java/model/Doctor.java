@@ -17,6 +17,7 @@ public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BigInteger")
     private int id;
     private String name;
     private String surname;
