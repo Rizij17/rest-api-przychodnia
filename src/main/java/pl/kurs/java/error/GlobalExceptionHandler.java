@@ -8,6 +8,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
         if ("UC_DOCTOR_NIP".equals(constraintName)) {
             message = "NIP_NOT_UNIQUE";
             field = "nip";
-        } else if ("UC_PATIENT_EMAIL".equals(constraintName)){
+        } else if ("UC_PATIENT_EMAIL".equals(constraintName)) {
             message = "EMAIL_NOT_UNIQUE";
             field = "email";
         }

@@ -15,9 +15,7 @@ import pl.kurs.java.model.Doctor;
 import pl.kurs.java.model.Patient;
 import pl.kurs.java.model.command.CreateAppointmentCommand;
 import pl.kurs.java.model.command.UpdateAppointmentCommand;
-import pl.kurs.java.model.command.UpdatedDoctorCommand;
 import pl.kurs.java.model.dto.AppointmentDto;
-import pl.kurs.java.model.dto.DoctorDto;
 import pl.kurs.java.repository.AppointmentRepository;
 
 import java.time.LocalDateTime;

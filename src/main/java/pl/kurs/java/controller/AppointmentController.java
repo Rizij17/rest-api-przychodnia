@@ -42,20 +42,17 @@ public class AppointmentController {
                 .map(a -> modelMapper.map(a, AppointmentDto.class)));
     }
 
+//    @PostMapping
+//    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody @Valid CreateAppointmentCommand createAppointmentCommand) {
+//        Appointment appointment = appointmentService.save(modelMapper.map(createAppointmentCommand, Appointment.class));
+//        return new ResponseEntity<>(modelMapper.map(appointment, AppointmentDto.class), HttpStatus.CREATED);
+//    }
 
     @PostMapping
-    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody @Valid CreateAppointmentCommand createAppointmentCommand) {
-        Appointment appointment = appointmentService.save(modelMapper.map(createAppointmentCommand, Appointment.class));
-        return new ResponseEntity<>(modelMapper.map(appointment, AppointmentDto.class), HttpStatus.CREATED);
-    }
-
-    @PostMapping
-    public ResponseEntity saveAppointment(@RequestBody @Valid CreateAppointmentCommand createAppointmentCommand){
+    public ResponseEntity saveAppointment(@RequestBody @Valid CreateAppointmentCommand createAppointmentCommand) {
         Appointment appointment = appointmentService.createAppointment(createAppointmentCommand);
         return new ResponseEntity<>(modelMapper.map(appointment, AppointmentDto.class), HttpStatus.CREATED);
     }
-
-
 
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentDto> editAppointment(@PathVariable int id, @Valid @RequestBody UpdateAppointmentCommand updateAppointmentCommand) {

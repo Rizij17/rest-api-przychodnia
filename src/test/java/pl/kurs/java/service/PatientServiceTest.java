@@ -1,14 +1,14 @@
 package pl.kurs.java.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import pl.kurs.java.model.Patient;
 import pl.kurs.java.repository.PatientRepository;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PatientServiceTest {
@@ -21,7 +21,7 @@ class PatientServiceTest {
     private Patient patient1, patient2;
 
     @BeforeEach
-    void init(){
+    void init() {
         MockitoAnnotations.openMocks(this);
         patientService = new PatientService(patientRepositoryMock);
         patient1 = Patient.builder()
@@ -42,4 +42,12 @@ class PatientServiceTest {
                 .build();
     }
 
+    @Test
+    void shouldSavePatient() {
+        Mockito.when(patientRepositoryMock.saveAndFlush(patient1)).thenReturn(patient1);
+
+        Patient saved = patientService.save(patient1);
+
+        Mockito.verify(patientRepositoryMock).saveAndFlush(saved);
+    }
 }

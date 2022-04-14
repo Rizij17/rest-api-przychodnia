@@ -72,8 +72,8 @@ public class DoctorController {
     }
 
     @PutMapping({"/{id}/fire"})
-    public ResponseEntity<DoctorDto> fireDoctor(@PathVariable int id){
-        Doctor toFire = doctorService.findById(id).orElseThrow(()->new EntityNotFoundException("Doctor", Integer.toString(id)));
+    public ResponseEntity<DoctorDto> fireDoctor(@PathVariable int id) {
+        Doctor toFire = doctorService.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor", Integer.toString(id)));
         Doctor fired = doctorService.fire(toFire);
         return new ResponseEntity(modelMapper.map(fired, DoctorDto.class), HttpStatus.OK);
     }

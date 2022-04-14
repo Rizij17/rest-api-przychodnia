@@ -33,12 +33,12 @@ public class PatientService {
     }
 
     @Transactional
-    public Patient save(Patient patient){
+    public Patient save(Patient patient) {
         return patientRepository.saveAndFlush(patient);
     }
 
     @Transactional
-    public void deleteById(int id)  {
+    public void deleteById(int id) {
         patientRepository.findById(id).ifPresent(patientRepository::delete);
     }
 
